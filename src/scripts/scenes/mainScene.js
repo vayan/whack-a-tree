@@ -2,9 +2,12 @@ import PhaserLogo from '../objects/phaserLogo'
 import FpsText from '../objects/fpsText'
 import progressBar from '../objects/progressBar'
 import Button from '../objects/button'
+import Forest from '../objects/forest'
 
 export default class MainScene extends Phaser.Scene {
   endGame
+  score
+  forest
 
   constructor() {
     super({ key: 'MainScene' })
@@ -27,6 +30,7 @@ export default class MainScene extends Phaser.Scene {
       right: [400, 750]
     }
     this.countdownValue = 60;
+    this.score = 11111
   }
 
   preload() {
@@ -50,9 +54,11 @@ export default class MainScene extends Phaser.Scene {
       loop: true
     })
 
-    this.endGame = new Button(this, 0, 0, 'End The Game', () => {
-      this.scene.start('EndScene')
-    })
+    this.endGame = new Button(this, 0,0, "End The Game", () => {
+      this.scene.start('EndScene', { "score": this.score })
+    });
+
+    this.forest = new Forest(this, 10, 100)
 
     const Y_POSITION_SQUARES = 700
     const SQUARE_SIDE = 130
