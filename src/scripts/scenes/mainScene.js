@@ -22,9 +22,9 @@ export default class MainScene extends Phaser.Scene {
     this.showMole = this.showMole.bind(this)
     this.showTimer = this.showTimer.bind(this)
     this.mappingPosition = {
-      left: [150, 450],
-      middle: [450, 450],
-      right: [650, 450]
+      left: [80, 750],
+      middle: [240, 750],
+      right: [400, 750]
     }
     this.countdownValue = 60;
   }
@@ -36,7 +36,6 @@ export default class MainScene extends Phaser.Scene {
     })
 
     this.load.image('bomb', 'assets/img/bomb.png')
-
     this.load.image('star', 'assets/img/star.png')
   }
   event() {}
@@ -51,13 +50,16 @@ export default class MainScene extends Phaser.Scene {
       loop: true
     })
 
-    this.endGame = new Button(this, 0,0, "End The Game", () => {
+    this.endGame = new Button(this, 0, 0, 'End The Game', () => {
       this.scene.start('EndScene')
-    });
+    })
 
-    this.rect1 = new Phaser.Geom.Rectangle(100, 400, 200, 200)
-    this.rect2 = new Phaser.Geom.Rectangle(350, 400, 200, 200)
-    this.rect3 = new Phaser.Geom.Rectangle(600, 400, 200, 200)
+    const Y_POSITION_SQUARES = 700
+    const SQUARE_SIDE = 130
+
+    this.rect1 = new Phaser.Geom.Rectangle(30, Y_POSITION_SQUARES, SQUARE_SIDE, SQUARE_SIDE)
+    this.rect2 = new Phaser.Geom.Rectangle(190, Y_POSITION_SQUARES, SQUARE_SIDE, SQUARE_SIDE)
+    this.rect3 = new Phaser.Geom.Rectangle(350, Y_POSITION_SQUARES, SQUARE_SIDE, SQUARE_SIDE)
 
     this.graphics = this.add.graphics({ fillStyle: { color: 0x0000ff } })
 
