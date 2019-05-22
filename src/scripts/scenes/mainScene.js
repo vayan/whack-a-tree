@@ -89,7 +89,6 @@ export default class MainScene extends Phaser.Scene {
     const displayedItem = this.itemsToDisplay[this.currentItemOnScreen - 1]
     console.log(displayedItem)
     if (displayedItem.isGood) {
-      // forest.addItem(displayedItem)
       this.feedBackText = this.add
         .text(200, 850, 'Nice', { fontFamily: '"Roboto Condensed"' })
         .setFontSize(36)
@@ -103,6 +102,7 @@ export default class MainScene extends Phaser.Scene {
         .setBackgroundColor('#e74c3c')
         .setColor('#FFFFFF')
     }
+    this.forest.addItem(this.add.image(0,0, displayedItem.image).setScale(5))
     this.currentMole.destroy()
 
     // console.log(pointer)
