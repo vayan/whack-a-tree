@@ -58,7 +58,7 @@ export default class MainScene extends Phaser.Scene {
       this.scene.start('EndScene', { "score": this.score })
     });
 
-    this.forest = new Forest(this, 10, 100)
+    this.forest = new Forest(this, 0, 100)
 
     const Y_POSITION_SQUARES = 700
     const SQUARE_SIDE = 130
