@@ -13,23 +13,25 @@ export default class MainScene extends Phaser.Scene {
     super({ key: 'MainScene' })
     this.positionOfMole = ['left', 'middle', 'right']
     this.imagesToShow = ['bomb', 'star']
+    this.goodItems = ['bomb']
     this.itemsToDisplay = []
     // adds random mole
     for (let index = 0; index < 5; index++) {
       var position = this.positionOfMole[Phaser.Math.Between(0, this.positionOfMole.length - 1)]
       var image = this.imagesToShow[Phaser.Math.Between(0, this.imagesToShow.length - 1)]
-      this.itemsToDisplay.push({ position, image })
+      this.itemsToDisplay.push({ position, image, isGood: this.goodItems.includes(image) })
     }
     console.log(this.itemsToDisplay)
     this.currentItemOnScreen = 0
     this.showMole = this.showMole.bind(this)
+    this.onMoleTapped = this.onMoleTapped.bind(this)
     this.showTimer = this.showTimer.bind(this)
     this.mappingPosition = {
       left: [80, 750],
       middle: [240, 750],
       right: [400, 750]
     }
-    this.countdownValue = 60;
+    this.countdownValue = 60
     this.score = 11111
   }
 
@@ -54,9 +56,9 @@ export default class MainScene extends Phaser.Scene {
       loop: true
     })
 
-    this.endGame = new Button(this, 0,0, "End The Game", () => {
-      this.scene.start('EndScene', { "score": this.score })
-    });
+    this.endGame = new Button(this, 0, 0, 'End The Game', () => {
+      this.scene.start('EndScene', { score: this.score })
+    })
 
     this.forest = new Forest(this, 10, 100)
 
@@ -70,19 +72,40 @@ export default class MainScene extends Phaser.Scene {
     this.graphics = this.add.graphics({ fillStyle: { color: 0x0000ff } })
 
     this.graphics.fillRectShape(this.rect1)
-    this.graphics.setInteractive(this.rect1, this.event)
 
     this.graphics.fillRectShape(this.rect2)
-    this.graphics.setInteractive(this.rect2, this.event)
 
     this.graphics.fillRectShape(this.rect3)
-    this.graphics.setInteractive(this.rect3, this.event)
 
     this.whakaTimer = this.time.addEvent({
-      delay: 1000, // ms
+      delay: 3000, // ms
       callback: this.showMole,
       loop: true
     })
+  }
+
+  onMoleTapped(pointer, gameObject) {
+    // we need to dicrease because the counter is increased because this gets executed
+    const displayedItem = this.itemsToDisplay[this.currentItemOnScreen - 1]
+    console.log(displayedItem)
+    if (displayedItem.isGood) {
+      // forest.addItem(displayedItem)
+      this.feedBackText = this.add
+        .text(200, 850, 'Nice', { fontFamily: '"Roboto Condensed"' })
+        .setFontSize(36)
+        .setBackgroundColor('#27ae60')
+        .setColor('#FFFFFF')
+      //this.feedBackText.destroy()
+    } else {
+      this.feedBackText = this.add
+        .text(200, 850, 'Bad', { fontFamily: '"Roboto Condensed"' })
+        .setFontSize(36)
+        .setBackgroundColor('#e74c3c')
+        .setColor('#FFFFFF')
+    }
+    this.currentMole.destroy()
+
+    // console.log(pointer)
   }
 
   showMole() {
@@ -98,6 +121,8 @@ export default class MainScene extends Phaser.Scene {
     const x = this.mappingPosition[itemToDisplay.position][0]
     const y = this.mappingPosition[itemToDisplay.position][1]
     this.currentMole = this.add.image(x, y, itemToDisplay.image).setScale(5)
+    this.currentMole.setInteractive()
+    this.input.on('gameobjectdown', this.onMoleTapped)
 
     this.currentItemOnScreen++
   }
