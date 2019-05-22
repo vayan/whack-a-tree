@@ -1,5 +1,6 @@
 import PhaserLogo from '../objects/phaserLogo'
 import FpsText from '../objects/fpsText'
+import progressBar from '../objects/progressBar'
 
 export default class MainScene extends Phaser.Scene {
   fpsText
@@ -13,7 +14,26 @@ export default class MainScene extends Phaser.Scene {
      * Delete all the code below to start a fresh scene
      */
     new PhaserLogo(this, this.cameras.main.width / 2, 0)
+    this.progressBar = new progressBar(this)
     this.fpsText = new FpsText(this)
+    let start = 60;
+    let test = 0;
+
+    const interval2 = setInterval(() => {
+      if (test === 300) {
+        clearInterval(interval2)
+      }
+      this.progressBar.update(test)
+      test += 10;
+    }, 1000)
+
+    const interval = setInterval(() => {
+      if (start === 0) {
+        clearInterval(interval)
+      }
+      this.fpsText.update(this, start, 0)
+      start--;
+    }, 1000)
 
     // async/await example
     const pause = ms => {
@@ -45,6 +65,5 @@ export default class MainScene extends Phaser.Scene {
   }
 
   update() {
-    this.fpsText.update(this)
   }
 }
