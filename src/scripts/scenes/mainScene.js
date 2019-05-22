@@ -1,69 +1,107 @@
 import PhaserLogo from '../objects/phaserLogo'
 import FpsText from '../objects/fpsText'
 import progressBar from '../objects/progressBar'
+import Button from '../objects/button'
 
 export default class MainScene extends Phaser.Scene {
-  fpsText
+  endGame
 
   constructor() {
     super({ key: 'MainScene' })
+    this.positionOfMole = ['left', 'middle', 'right']
+    this.imagesToShow = ['bomb', 'star']
+    this.itemsToDisplay = []
+    // adds random mole
+    for (let index = 0; index < 5; index++) {
+      var position = this.positionOfMole[Phaser.Math.Between(0, this.positionOfMole.length - 1)]
+      var image = this.imagesToShow[Phaser.Math.Between(0, this.imagesToShow.length - 1)]
+      this.itemsToDisplay.push({ position, image })
+    }
+    console.log(this.itemsToDisplay)
+    this.currentItemOnScreen = 0
+    this.showMole = this.showMole.bind(this)
+    this.showTimer = this.showTimer.bind(this)
+    this.mappingPosition = {
+      left: [150, 450],
+      middle: [450, 450],
+      right: [650, 450]
+    }
+    this.countdownValue = 60;
   }
+
+  preload() {
+    this.load.spritesheet('dude', 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/265548/mole.png', {
+      frameWidth: 64,
+      frameHeight: 72
+    })
+
+    this.load.image('bomb', 'assets/img/bomb.png')
+
+    this.load.image('star', 'assets/img/star.png')
+  }
+  event() {}
 
   create() {
-    /**
-     * Delete all the code below to start a fresh scene
-     */
-    new PhaserLogo(this, this.cameras.main.width / 2, 0)
     this.progressBar = new progressBar(this)
     this.fpsText = new FpsText(this)
-    let start = 60;
-    let test = 0;
 
-    const interval2 = setInterval(() => {
-      if (test === 300) {
-        clearInterval(interval2)
-      }
-      this.progressBar.update(test)
-      test += 10;
-    }, 1000)
+    this.countdownTimer = this.time.addEvent({
+      delay: 1000, // ms
+      callback: this.showTimer,
+      loop: true
+    })
 
-    const interval = setInterval(() => {
-      if (start === 0) {
-        clearInterval(interval)
-      }
-      this.fpsText.update(this, start, 0)
-      start--;
-    }, 1000)
+    this.endGame = new Button(this, 0,0, "End The Game", () => {
+      this.scene.start('EndScene')
+    });
 
-    // async/await example
-    const pause = ms => {
-      return new Promise(resolve => {
-        window.setTimeout(() => {
-          resolve()
-        }, ms)
-      })
-    }
-    const asyncFunction = async () => {
-      console.log('Before Pause')
-      await pause(4000) // 4 seconds pause
-      console.log('After Pause')
-    }
-    asyncFunction()
+    this.rect1 = new Phaser.Geom.Rectangle(100, 400, 200, 200)
+    this.rect2 = new Phaser.Geom.Rectangle(350, 400, 200, 200)
+    this.rect3 = new Phaser.Geom.Rectangle(600, 400, 200, 200)
 
-    // Spread operator test
-    const numbers = [0, 1, 2, 3]
-    const moreNumbers = [...numbers, 4, 5]
-    console.log(`All numbers: ` + moreNumbers)
+    this.graphics = this.add.graphics({ fillStyle: { color: 0x0000ff } })
 
-    // display the Phaser.VERSION
-    this.add
-      .text(this.cameras.main.width - 15, 15, `Phaser v${Phaser.VERSION}`, {
-        color: '#000000',
-        fontSize: 24
-      })
-      .setOrigin(1, 0)
+    this.graphics.fillRectShape(this.rect1)
+    this.graphics.setInteractive(this.rect1, this.event)
+
+    this.graphics.fillRectShape(this.rect2)
+    this.graphics.setInteractive(this.rect2, this.event)
+
+    this.graphics.fillRectShape(this.rect3)
+    this.graphics.setInteractive(this.rect3, this.event)
+
+    this.whakaTimer = this.time.addEvent({
+      delay: 1000, // ms
+      callback: this.showMole,
+      loop: true
+    })
   }
 
-  update() {
+  showMole() {
+    if (this.currentMole) {
+      this.currentMole.destroy()
+    }
+
+    if (this.currentItemOnScreen >= this.itemsToDisplay.length) {
+      this.whakaTimer.remove()
+      return
+    }
+    const itemToDisplay = this.itemsToDisplay[this.currentItemOnScreen]
+    const x = this.mappingPosition[itemToDisplay.position][0]
+    const y = this.mappingPosition[itemToDisplay.position][1]
+    this.currentMole = this.add.image(x, y, itemToDisplay.image).setScale(5)
+
+    this.currentItemOnScreen++
   }
+
+  showTimer() {
+    if (!this.countdownValue) {
+      this.countdownTimer.remove()
+      return
+    }
+    this.fpsText.update(this, this.countdownValue, 0)
+    this.countdownValue--
+  }
+
+  update() {}
 }

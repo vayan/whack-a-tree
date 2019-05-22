@@ -6,14 +6,16 @@ export default class FpsText extends Phaser.GameObjects.Text {
     this.progressBox = scene.add.graphics();
 
     this.progressBox.fillStyle(0x222222, 0.8);
-    this.progressBox.fillRect(240, 270, 320, 50);
+    this.progressBox.fillRect(230, 10, 250, 30);
 
     this.progressBar.fillStyle(0x0000FF, 1);
-    this.progressBar.fillRect(250, 280, 0 * 1, 30);
+    this.progressBar.fillRect(230, 10, 0 * 1, 30);
   }
 
   update(x) {
     this.progressBar.clear()
-    this.progressBar.fillRect(250, 280, x * 1, 30);
+    if (x <= 250) {
+      this.progressBar.fillRect(230, 10, x * 1, 30);
+    }
   }
 }
