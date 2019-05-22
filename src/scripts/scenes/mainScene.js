@@ -1,7 +1,10 @@
 import PhaserLogo from '../objects/phaserLogo'
 import FpsText from '../objects/fpsText'
+import Button from '../objects/button'
 
 export default class MainScene extends Phaser.Scene {
+  endGame
+
   constructor() {
     super({ key: 'MainScene' })
     this.positionOfMole = ['left', 'middle', 'right']
@@ -36,6 +39,10 @@ export default class MainScene extends Phaser.Scene {
   event() {}
 
   create() {
+    this.endGame = new Button(this, 0,0, "End The Game", () => {
+      this.scene.start('EndScene')
+    });
+
     this.rect1 = new Phaser.Geom.Rectangle(100, 400, 200, 200)
     this.rect2 = new Phaser.Geom.Rectangle(350, 400, 200, 200)
     this.rect3 = new Phaser.Geom.Rectangle(600, 400, 200, 200)

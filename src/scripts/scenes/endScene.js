@@ -1,4 +1,8 @@
+import Button from '../objects/button'
+
 export default class EndScene extends Phaser.Scene {
+  restartButton
+
   constructor() {
     super({ key: 'EndScene' })
   }
@@ -7,23 +11,12 @@ export default class EndScene extends Phaser.Scene {
   }
 
   create() {
-    this.add.text(
-      0,
-      0,
-      'Ended',
-      { fill: '#0f0' }
-    );
-
-    const retryButton = this.add.text(
-      200,
-      0,
-      'Retry Game',
-      { fill: '#0f0' }
-    );
-    retryButton.setInteractive();
-
-    retryButton.on('pointerdown', () => {
-      this.scene.start('MainScene')
-    })
+    this.restartButton = new Button(
+      this,
+      this.cameras.main.width / 2 - 140,
+      this.cameras.main.height / 2,
+      "Restart The Game", () => {
+        this.scene.start('MainScene')
+    });
   }
 }

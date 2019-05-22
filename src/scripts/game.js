@@ -5,11 +5,11 @@ import MainScene from './scenes/mainScene'
 import StartScene from './scenes/startScene'
 import EndScene from './scenes/endScene'
 
-const DEFAULT_WIDTH = 300
-const DEFAULT_HEIGHT = 600
+const DEFAULT_WIDTH = 500
+const DEFAULT_HEIGHT = 900
 
 const config = {
-  backgroundColor: '#ffffff',
+  backgroundColor: '#fff',
   scale: {
     parent: 'phaser-game',
     mode: Phaser.Scale.FIT,
